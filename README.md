@@ -1,20 +1,43 @@
 # KTCEDC
 
-TestRepowithCodex
+KTCEDC is an Android application project focused on behavior-driven features, maintainability (MA-style modular code), and resilient backups for code recovery. This repository provides guidelines, tooling, and examples to help contributors implement features with secure review and recovery workflows.
 
-## Using GitHub Copilot Spaces
+## Purpose
 
-This repository includes example configuration and guidance to help you use GitHub Copilot Spaces with this project.
+- Implement Android app features where "behavior files" describe expected behaviors and guide development.
+- Organize code for maintainability and ease of review.
+- Provide backup/restore approaches and documentation to recover code if needed.
+- Enforce security and code-review controls to protect the source and team activity.
 
-Files added for Copilot Spaces integration:
+## Getting started (developer)
 
-- `mcp_config.json` — example MCP client configuration enabling the copilot_spaces toolset.
-- `.copilot/example-space.md` — recommendations and an example Space manifest describing what to include in a Space for this repo.
+1. Install Android Studio and the Java/Kotlin toolchain (JDK 11+ recommended).
+2. Clone the repository:
+   git clone https://github.com/RepoKan/KTCEDC.git
+3. Open the project in Android Studio and use Gradle to build and run the app.
 
-How to use
+## Project layout (recommended)
 
-1. Add `mcp_config.json` to your local Copilot MCP client configuration or point your IDE's MCP client at the example configuration.
-2. Follow the guidance in `.copilot/example-space.md` to create a Space in GitHub and add the recommended context.
-3. In your IDE, ensure Copilot Chat is set to "Agent" mode and that your MCP client is configured to use the `copilot_spaces` toolset (the `X-MCP-Toolsets` header).
+- app/ - Android app module (source code, resources)
+- behavior/ - behavior specification files (human-readable YAML/JSON that describe feature behavior)
+- docs/ - architecture notes, recovery instructions, onboarding
+- backups/ - automated or manual backup artifacts (encrypted archives, diffs)
 
-For more information, see: https://docs.github.com/en/copilot/how-tos/provide-context/use-copilot-spaces/use-copilot-spaces
+## Development workflow
+
+- Create topic branches: `git checkout -b <yourname>/feature/short-desc`
+- Keep commits small and focused; use conventional commit messages.
+- Open a Pull Request targeting `main` and request at least one review using the CODEOWNERS file.
+- CI runs on PRs and must pass before merging.
+
+## Copilot Spaces
+
+This repo includes example configuration to help you use GitHub Copilot Spaces. See `.copilot/example-space.md` for recommended Space contents and instructions. Use the provided `mcp_config.json` to enable the `copilot_spaces` toolset in your MCP client.
+
+## Security & backups
+
+- Do not commit secrets or credentials. Use encrypted secrets or a secure secret manager for CI.
+- Follow the instructions in SECURITY.md to report vulnerabilities.
+- Store backups in `backups/` and ensure sensitive backups are encrypted.
+
+For more information about contributing and code reviews, see CONTRIBUTING.md and CODE_OF_CONDUCT.md.
