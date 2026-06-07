@@ -1,0 +1,43 @@
+%% Architecture: Team -> bootstrap -> review -> main -> local
+flowchart LR
+  subgraph CloudGitHub["GitHub: RepoKan/KTCEDC"]
+    direction TB
+    PB[bootstrap/android-project-setup]:::branch
+    REVIEW[review/main]:::branch
+    MIRROR[mirror/main]:::branch
+    CI[GitHub Actions (Android CI + Linter)]:::ci
+    DEP[Dependabot]:::tool
+    COP[Copilot Spaces]:::tool
+  end
+
+  subgraph Team["Development Team (Cloud)"]
+    DEV[Developers\n(feature branches)]:::dev
+  end
+
+  KANT[Kantapon\n(Code Owner / Approver)]:::owner
+  OP[Local Operator\n(RepoKan operator)]:::operator
+  LOCAL[On-prem Server\n(local main clone)]:::local
+  BACKUP[Backups & Releases\n(artifacts storage)]:::backup
+
+  DEV -->|PR to| PB
+  PB -->|CI pass + team review| PB
+  PB -->|PR: bootstrap -> review/main| REVIEW
+  OP -->|push snapshot (incoming/*) | MIRROR
+  MIRROR -->|PR: incoming/* -> review/main| REVIEW
+  KANT -->|approve & merge| REVIEW
+  REVIEW -->|merge ready| MIRROR
+  REVIEW -->|approved -> local pull| LOCAL
+  LOCAL -->|deploy| BACKUP
+
+  CI --> PB
+  DEP --> PB
+  COP --> PB
+
+  classDef branch fill:#f8f9fa,stroke:#0b5ed7,stroke-width:1px;
+  classDef owner fill:#e9f7ef,stroke:#198754;
+  classDef dev fill:#fff3cd,stroke:#f59f00;
+  classDef operator fill:#e8f0ff,stroke:#0d6efd;
+  classDef local fill:#f1f3f5,stroke:#6c757d;
+  classDef backup fill:#f8f0fc,stroke:#6f42c1;
+  classDef ci fill:#eef7ff,stroke:#0d6efd;
+  classDef tool fill:#f0f8ff,stroke:#0d6efd;
