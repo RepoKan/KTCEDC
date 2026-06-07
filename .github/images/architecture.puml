@@ -1,0 +1,42 @@
+@startuml
+!define RECTANGLE class
+skinparam componentStyle rectangle
+
+actor "Developers (team)" as Dev
+actor "Kantapon (owner)" as Kant
+actor "Local Operator" as Operator
+
+node "GitHub (RepoKan/KTCEDC)" {
+  component "bootstrap/android-project-setup" as Bootstrap
+  component "review/main" as Review
+  component "mirror/main" as Mirror
+  component "GitHub Actions (CI)" as CI
+  component "Dependabot" as Dependabot
+  component "Copilot Spaces" as Copilot
+}
+
+node "On-prem Server" as Local {
+  component "Local main clone" as LocalMain
+  component "Backups & Artifacts" as Backups
+}
+
+Dev -> Bootstrap : push feature branches\nopen PRs
+Bootstrap -> CI : run builds/tests/linter
+Bootstrap -> Review : PR (bootstrap -> review/main)
+Operator -> Mirror : push production snapshot (incoming/*)
+Mirror -> Review : PR (incoming/* -> review/main)
+Kant -> Review : review & approve (CODEOWNERS)
+Review -> Mirror : merge/ready (merged snapshot)
+Review -> LocalMain : approved -> operator pulls
+LocalMain -> Backups : build & artifact storage
+
+Dependabot -> Bootstrap : dependency PRs
+Copilot -> Dev : context & assistance
+
+note right of Review
+  Branch-protection:
+  - Require PR reviews
+  - Require CODEOWNERS approval (Kantapon)
+  - Require CI checks on review/main
+end note
+@enduml
